@@ -1,7 +1,9 @@
 import 'package:doit_app/screens/home_screen.dart';
 import 'package:doit_app/screens/signup_screen.dart';
+import 'package:doit_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
 
+/// Login screen for existing user authentication
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -10,22 +12,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usernameController = TextEditingController();
+  // Text field controllers
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  // Password visibility state
   bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        // Background gradient
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.blue.shade400,
-              Colors.blue.shade600,
-            ],
+            colors: [Colors.blue.shade400, Colors.blue.shade600],
           ),
         ),
         child: Center(
@@ -69,13 +72,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 32),
 
-                  // Username Field
-                  _buildLabel('Username'),
+                  // Email Field
+                  _buildLabel('Email'),
                   SizedBox(height: 8),
                   _buildTextField(
-                    controller: _usernameController,
-                    hintText: 'Insira o seu username',
-                    icon: Icons.person,
+                    controller: _emailController,
+                    hintText: 'Insira o seu email',
+                    icon: Icons.email,
+                    keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: 24),
 
@@ -90,8 +94,47 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                      onPressed: () async {
+                        // Validate that all fields are filled
+                        if (_emailController.text.isEmpty ||
+                            _passwordController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Por favor, preencha todos os campos.',
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+
+                        // Sign in with Firebase Auth
+                        final result = await AuthService().signIn(
+                          _emailController.text,
+                          _passwordController.text,
+                        );
+
+                        // If login successful, navigate to home screen
+                        if (result.user != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                          );
+                          return;
+                        }
+
+                        // Show error message when login fails
+                        if (result.errorMessage != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result.errorMessage!),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -112,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Login Link
+                  // Sign Up Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -125,7 +168,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignUpScreen(),
+                            ),
+                          );
                         },
                         child: Text(
                           'Crie uma conta',
@@ -147,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  /// Builds a label widget for input fields
   Widget _buildLabel(String text) {
     return Align(
       alignment: Alignment.centerLeft,
@@ -161,6 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  /// Builds a custom text field with consistent styling
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,
@@ -193,6 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  /// Builds the password field with visibility toggle
   Widget _buildPasswordField() {
     return TextField(
       controller: _passwordController,
@@ -202,6 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: 'Insira a sua password',
         hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
         prefixIcon: Icon(Icons.lock, color: Colors.white.withOpacity(0.7)),
+        // Toggle password visibility button
         suffixIcon: IconButton(
           icon: Icon(
             _obscurePassword ? Icons.visibility_off : Icons.visibility,
