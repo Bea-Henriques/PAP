@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// Result object for authentication operations
+/// Contains user data on success or error message on failure
 class AuthResult {
   final User? user;
   final String? errorMessage;
@@ -7,10 +9,12 @@ class AuthResult {
   const AuthResult({this.user, this.errorMessage});
 }
 
+/// Service for handling Firebase Authentication
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Sign in
+  /// Sign in user with email and password
+  /// Returns [AuthResult] with user on success or error message on failure
   Future<AuthResult> signIn(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -28,7 +32,8 @@ class AuthService {
     }
   }
 
-  // Sign up
+  /// Register new user with email and password
+  /// Returns [AuthResult] with user on success or error message on failure
   Future<AuthResult> register(String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
@@ -46,7 +51,7 @@ class AuthService {
     }
   }
 
-  // Sign out
+  /// Sign out current user from Firebase
   Future<void> signOut() async {
     try {
       await _auth.signOut();
@@ -55,6 +60,7 @@ class AuthService {
     }
   }
 
+  /// Maps Firebase error codes to user-friendly Portuguese messages
   String _getErrorMessage(String code) {
     switch (code) {
       case 'email-already-in-use':

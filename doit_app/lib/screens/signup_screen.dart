@@ -2,6 +2,10 @@ import 'package:doit_app/screens/home_screen.dart';
 import 'package:doit_app/screens/login_screen.dart';
 import 'package:doit_app/services/auth_services.dart';
 import 'package:doit_app/services/users_services.dart';
+import 'package:doit_app/widgets/custom_button.dart';
+import 'package:doit_app/widgets/custom_label.dart';
+import 'package:doit_app/widgets/custom_text.dart';
+import 'package:doit_app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 
 /// Sign up screen for new user registration
@@ -56,120 +60,74 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(height: 32),
 
                   // Title
-                  Text(
-                    'Bem-vindo',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  CustomText(
+                    text: 'Bem-vindo',
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    'Crie uma conta para começar',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
+                  CustomText(
+                    text: 'Crie uma conta para começar',
+                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.8),
                   ),
                   SizedBox(height: 32),
 
                   // Username Field
-                  _buildLabel('Username'),
+                  CustomLabel(text: 'Username'),
                   SizedBox(height: 8),
-                  _buildTextField(
+                  CustomTextfield(
                     controller: _usernameController,
                     hintText: 'Insira o seu username',
-                    icon: Icons.person,
+                    prefixIcon: Icons.person,
                   ),
                   SizedBox(height: 24),
 
                   // Email Field
-                  _buildLabel('Email'),
+                  CustomLabel(text: 'Email'),
                   SizedBox(height: 8),
-                  _buildTextField(
+                  CustomTextfield(
                     controller: _emailController,
                     hintText: 'Insira o seu email',
-                    icon: Icons.email,
+                    prefixIcon: Icons.email,
                     keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: 24),
 
                   // Password Field
-                  _buildLabel('Password'),
+                  CustomLabel(text: 'Password'),
                   SizedBox(height: 8),
-                  _buildPasswordField(),
+                  CustomTextfield(
+                    controller: _passwordController,
+                    hintText: 'Insira a sua password',
+                    prefixIcon: Icons.lock,
+                    obscureText: _obscurePassword,
+                    sufixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.white.withOpacity(0.7),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
+                  ),
                   SizedBox(height: 32),
 
                   // Sign Up Button
                   SizedBox(
                     width: double.infinity,
                     height: 52,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // Validate that all fields are filled
-                        if (_usernameController.text.isEmpty ||
-                            _emailController.text.isEmpty ||
-                            _passwordController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Por favor, preencha todos os campos.',
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-
-                        // Register user with Firebase Auth
-                        final result = await AuthService().register(
-                          _emailController.text,
-                          _passwordController.text,
-                        );
-
-                        // If registration successful, create user document and navigate
-                        if (result.user != null) {
-                          await UsersService().createUser(
-                            result.user!.uid,
-                            _usernameController.text,
-                            _emailController.text,
-                          );
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomeScreen(),
-                            ),
-                          );
-                          return;
-                        }
-
-                        // Show error message when registration fails
-                        if (result.errorMessage != null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(result.errorMessage!),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.blue.shade600,
-                        elevation: 8,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Criar Conta',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    child: CustomButton(
+                      onPressed: _handleSignUp,
+                      text: 'Criar Conta',
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blue.shade600,
                     ),
                   ),
                   SizedBox(height: 20),
@@ -178,12 +136,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Já tem uma conta? ',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 14,
-                        ),
+                      CustomText(
+                        text: 'Já tem uma conta? ',
+                        fontSize: 14,
+                        color: Colors.white.withOpacity(0.8),
                       ),
                       TextButton(
                         onPressed: () {
@@ -194,13 +150,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           );
                         },
-                        child: Text(
-                          'Inicie sessão',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: CustomText(
+                          text: 'Inicie sessão',
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                     ],
@@ -214,91 +168,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  /// Builds a label widget for input fields
-  Widget _buildLabel(String text) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
+  /// Handles sign up button press
+  Future<void> _handleSignUp() async {
+    // Validate that all fields are filled
+    if (_usernameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Por favor, preencha todos os campos.'),
+          backgroundColor: Colors.red,
         ),
-      ),
-    );
-  }
+      );
+      return;
+    }
 
-  /// Builds a custom text field with consistent styling
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
-        prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.7)),
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.1),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white, width: 2),
-        ),
-      ),
+    // Register user with Firebase Auth
+    final result = await AuthService().register(
+      _emailController.text,
+      _passwordController.text,
     );
-  }
 
-  /// Builds the password field with visibility toggle
-  Widget _buildPasswordField() {
-    return TextField(
-      controller: _passwordController,
-      obscureText: _obscurePassword,
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: 'Insira a sua password',
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
-        prefixIcon: Icon(Icons.lock, color: Colors.white.withOpacity(0.7)),
-        // Toggle password visibility button
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscurePassword ? Icons.visibility_off : Icons.visibility,
-            color: Colors.white.withOpacity(0.7),
-          ),
-          onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
-          },
+    // If registration successful, create user document and navigate
+    if (result.user != null) {
+      await UsersService().createUser(
+        result.user!.uid,
+        _usernameController.text,
+        _emailController.text,
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+      return;
+    }
+
+    // Show error message when registration fails
+    if (result.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.errorMessage!),
+          backgroundColor: Colors.red,
         ),
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.1),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white, width: 2),
-        ),
-      ),
-    );
+      );
+    }
   }
 }
