@@ -30,9 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
         // Background gradient
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.blue.shade400, Colors.blue.shade600],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.blue.shade50, Colors.white],
           ),
         ),
         child: Center(
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.blue.shade500.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(
@@ -60,15 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Title
                   CustomText(
                     text: 'Bem-vindo',
-                    fontSize: 28,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.blue.shade800
                   ),
                   SizedBox(height: 8),
                   CustomText(
                     text: 'Inicie sessão para começar',
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.blue.shade800,
                   ),
                   SizedBox(height: 32),
 
@@ -114,8 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: CustomButton(
                       onPressed: _handleLogin,
                       text: 'Entrar',
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.blue.shade600,
+                      backgroundColor: Colors.blue.shade600,
+                      foregroundColor: Colors.white,
                     ),
                   ),
                   SizedBox(height: 20),
@@ -126,8 +126,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       CustomText(
                         text: 'Ainda não tem uma conta?',
-                        fontSize: 14,
-                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueGrey[600]
                       ),
                       TextButton(
                         onPressed: () {
@@ -140,9 +141,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: CustomText(
                           text: 'Crie uma conta',
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.blue.shade700,
                         ),
                       ),
                     ],

@@ -19,9 +19,9 @@ class CustomLabel extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: CustomText(
         text: text, 
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: Colors.white),
+        color: Colors.blueGrey[700]),
     );
   }
 }
