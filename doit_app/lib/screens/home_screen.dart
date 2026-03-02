@@ -1,3 +1,5 @@
+import 'package:doit_app/screens/projects_screen.dart';
+import 'package:doit_app/services/users_services.dart';
 import 'package:doit_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 
@@ -65,8 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 selectedIcon: Icon(Icons.chat_bubble, size: 26),
                 icon: Icon(Icons.chat_bubble_outline, size: 26),
                 label: 'Chatbot',
-              ),
+              ),             
             ]),
+        body: ProjectsScreen(),
       ),
     );
   }
