@@ -1,3 +1,6 @@
+import 'package:doit_app/widgets/custom_label.dart';
+import 'package:doit_app/widgets/custom_text.dart';
+import 'package:doit_app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 
 class ProjectsScreen extends StatefulWidget {
@@ -8,6 +11,10 @@ class ProjectsScreen extends StatefulWidget {
 }
 
 class _ProjectsScreenState extends State<ProjectsScreen> {
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,37 +27,66 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: ListView(
-          padding: EdgeInsets.all(16),
-          children: [
-            Card(
-              child: ListTile(
-                title: const Text('Projeto 1'),
-                subtitle: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    SizedBox(height: 4),
-                    Text('Descrição do projeto'),
-                    SizedBox(height: 4),
+        floatingActionButton: FloatingActionButton(
+          onPressed: openProjectForm, // create a project
+          child: Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+
+  void openProjectForm() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 400,
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Center(
+              child: Column(
+                  children: [
+                    CustomText(text: 'Novo Projeto', fontSize: 24),
+                    SizedBox(height: 8),
+                    CustomLabel(text: 'Nome'),
+                    SizedBox(height: 8),
+                    CustomTextfield(
+                      controller: _nameController, 
+                      hintText: 'Nome do projeto', 
+                      prefixIcon: Icons.text_fields,
+                    ),
+                    SizedBox(height: 8),
+                    CustomLabel(text: 'Descrição (opcional)'),
+                    SizedBox(height: 8),
+                    CustomTextfield(
+                      controller: _descriptionController, 
+                      hintText: 'Descrição do projeto', 
+                      prefixIcon: Icons.description,
+                    ),
+                    SizedBox(height: 8),
                     Row(
                       children: [
-                        Row(children: [
-                          Icon(Icons.calendar_month_outlined),
-                          SizedBox(width: 8,),
-                          Text('Dia/Mês/Ano'),
-                        ],),
-                        SizedBox(width: 8,),
-                        Chip(label: Text('Estado')),
+                        Column(
+                          children: [
+                            CustomLabel(text: 'Prazo'),
+                            // DateTimePicker
+                          ],
+                        ),
+                        SizedBox(width: 150),
+                        Column(
+                          children: [
+                            CustomLabel(text: 'Estado'),
+                            // Select
+                          ],
+                        ),
                       ],
                     ),
                   ],
                 ),
-              ),
-            )
-          ],
-        )
-      ),
-      );
+            ),
+          ),
+        );
+      },
+    );
   }
 }
