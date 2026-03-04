@@ -14,6 +14,8 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _dueDateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +29,20 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        floatingActionButton: FloatingActionButton(
-          onPressed: openProjectForm, // create a project
-          child: Icon(Icons.add),
+           floatingActionButton: FloatingActionButton(
+             onPressed: openProjectForm, // create a project
+             child: Icon(Icons.add),
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _startDateController.dispose();
+    _dueDateController.dispose();
+    super.dispose();
   }
 
   void openProjectForm() {
@@ -40,11 +50,11 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       context: context,
       builder: (BuildContext context) {
         return SizedBox(
-          height: 400,
+          height: 500,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
             child: Center(
-              child: Column(
+              child: Column(                
                   children: [
                     CustomText(text: 'Novo Projeto', fontSize: 24),
                     SizedBox(height: 8),
@@ -55,7 +65,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                       hintText: 'Nome do projeto', 
                       prefixIcon: Icons.text_fields,
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 14),
                     CustomLabel(text: 'Descrição (opcional)'),
                     SizedBox(height: 8),
                     CustomTextfield(
@@ -63,24 +73,47 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                       hintText: 'Descrição do projeto', 
                       prefixIcon: Icons.description,
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 14),
                     Row(
-                      children: [
-                        Column(
-                          children: [
-                            CustomLabel(text: 'Prazo'),
-                            // DateTimePicker
-                          ],
-                        ),
-                        SizedBox(width: 150),
-                        Column(
-                          children: [
-                            CustomLabel(text: 'Estado'),
-                            // Select
-                          ],
-                        ),
-                      ],
-                    ),
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                CustomLabel(text: 'Data de Início'),
+                                CustomTextfield(
+                                  controller: _startDateController, 
+                                  hintText: 'DD-MM-AAAA', 
+                                  prefixIcon: Icons.calendar_today_outlined,
+                                  readOnly: true,
+                                  ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                CustomLabel(text: 'Prazo'),
+                                CustomTextfield(
+                                  controller: _dueDateController, 
+                                  hintText: 'DD-MM-AAAA', 
+                                  prefixIcon: Icons.calendar_today_outlined,
+                                  readOnly: true,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 14),
+                      Column(
+                        children: [
+                          CustomLabel(text: 'Estado'),
+                          // DateTimePicker
+                        ],
+                      ),
                   ],
                 ),
             ),

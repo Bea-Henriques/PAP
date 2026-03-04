@@ -18,6 +18,7 @@ class CustomTextfield extends StatelessWidget {
     this.sufixIcon,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.readOnly = false,
   });
 
   final TextEditingController controller;
@@ -26,11 +27,13 @@ class CustomTextfield extends StatelessWidget {
   final Widget? sufixIcon;
   final bool obscureText ; 
   final TextInputType keyboardType;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      readOnly: readOnly,
       obscureText: obscureText,
       keyboardType: keyboardType,
       style: TextStyle(color: Colors.blueGrey[800]),
