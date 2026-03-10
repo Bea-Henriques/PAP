@@ -1,3 +1,4 @@
+import 'package:doit_app/models/project_model.dart';
 import 'package:doit_app/widgets/custom_button.dart';
 import 'package:doit_app/widgets/custom_label.dart';
 import 'package:doit_app/widgets/custom_text.dart';
@@ -22,6 +23,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   final Color _formAccentColor = Colors.blue;
   String _selectedState = 'Planeado';
   String _selectedPriority = 'Baixa';
+  final List<Project> _projects = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,53 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: openProjectForm, // create a project
           child: Icon(Icons.add),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: <Widget>[
+              Dismissible(
+                key: UniqueKey(), 
+                background: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(Icons.delete),
+                ),
+                child: Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 2,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      openProjectForm(); // open project details or edit form
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(text: 'Título do Projeto', fontSize: 16),
+                          const SizedBox(height: 6),
+                          CustomText(text: 'Descrição do projeto', fontSize: 14, color: Colors.blueGrey),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              CustomText(text: 'Estado', fontSize: 12),
+                              const SizedBox(width: 12),
+                              CustomText(text: 'Prioridade', fontSize: 12),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                ),
+            ],
+          ),
         ),
       ),
     );
