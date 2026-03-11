@@ -21,7 +21,7 @@ class CustomLabel extends StatelessWidget {
         text: text, 
         fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: Colors.blueGrey[700]),
+        color: Colors.white,),
     );
   }
 }

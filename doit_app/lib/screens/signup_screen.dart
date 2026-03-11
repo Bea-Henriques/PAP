@@ -32,9 +32,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // Background gradient
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade50, Colors.white],
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Color(0xFF15002B), // roxo escuro
+              Color(0xFF000000), // preto
+            ],
           ),
         ),
         child: Center(
@@ -44,19 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo/Header
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade500.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      Icons.check_circle_outline,
-                      size: 48,
-                      color: Colors.white,
-                    ),
-                  ),
+                  Icon(Icons.check_circle_outline, size: 100, color: Colors.white),
                   SizedBox(height: 32),
 
                   // Title
@@ -64,13 +55,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     text: 'Bem-vindo',
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade800
+                    color: Colors.white,
                   ),
                   SizedBox(height: 8),
                   CustomText(
                     text: 'Crie uma conta para começar',
                     fontSize: 14,
-                    color: Colors.blue.shade800
+                    color: Colors.white,
                   ),
                   SizedBox(height: 32),
 
@@ -108,7 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         _obscurePassword
                             ? Icons.visibility_off
                             : Icons.visibility,
-                        color: Colors.blue.shade500,
+                        color: Colors.white,
                       ),
                       onPressed: () {
                         setState(() {
@@ -126,7 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: CustomButton(
                       onPressed: _handleSignUp,
                       text: 'Criar Conta',
-                      backgroundColor: Colors.blue.shade600,
+                      backgroundColor: Colors.purple.shade900,
                       foregroundColor: Colors.white,
                     ),
                   ),
@@ -140,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         text: 'Já tem uma conta? ',
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Colors.blueGrey[600]
+                        color: Colors.blueGrey[600],
                       ),
                       TextButton(
                         onPressed: () {
@@ -155,7 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           text: 'Inicie sessão',
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Colors.blue.shade700,
+                          color: Colors.purple.shade900,
                         ),
                       ),
                     ],
