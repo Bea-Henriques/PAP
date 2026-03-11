@@ -1,5 +1,5 @@
 import 'package:doit_app/firebase_options.dart';
-import 'package:doit_app/screens/signup_screen.dart';
+import 'package:doit_app/screens/welcome_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const SignUpScreen(),
+      home: const WelcomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
