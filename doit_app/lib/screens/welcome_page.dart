@@ -1,3 +1,4 @@
+import 'package:doit_app/screens/signup_screen.dart';
 import 'package:doit_app/widgets/custom_button.dart';
 import 'package:doit_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,14 @@ class _WelcomePageState extends State<WelcomePage> {
                     width: double.infinity,
                     height: 52,
                     child: CustomButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignUpScreen(),
+                            ),
+                          );
+                      },
                       text: 'Começar',
                       backgroundColor: Colors.purple.shade900,
                       foregroundColor: Colors.white,
