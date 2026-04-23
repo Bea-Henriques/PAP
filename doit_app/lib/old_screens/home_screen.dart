@@ -1,4 +1,4 @@
-import 'package:doit_app/screens/projects_screen.dart';
+import 'package:doit_app/old_screens/projects_screen.dart';
 import 'package:doit_app/services/users_services.dart';
 import 'package:doit_app/widgets/custom_text.dart';
 import 'package:flutter/material.dart';

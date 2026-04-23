@@ -1,5 +1,5 @@
 import 'package:doit_app/firebase_options.dart';
-import 'package:doit_app/screens/welcome_page.dart';
+import 'package:doit_app/screens/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 

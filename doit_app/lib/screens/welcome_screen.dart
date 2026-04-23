@@ -1,4 +1,4 @@
-import 'package:doit_app/old_screens/signup_screen1.dart';
+import 'package:doit_app/screens/signup_screen.dart';
 import 'package:doit_app/widgets/custom_button.dart';
 import 'package:doit_app/widgets/custom_text.dart';
 import 'package:doit_app/app_constants.dart';
@@ -81,7 +81,7 @@ class WelcomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SignUpScreen(),
+                        builder: (context) => const SignUpScreen(),
                       ),
                     );
                   },

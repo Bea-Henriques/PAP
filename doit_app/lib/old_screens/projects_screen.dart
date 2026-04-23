@@ -290,15 +290,11 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                           ],
                         ),
                         SizedBox(height: 24),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: CustomButton(
+                          CustomButton(
                             onPressed: () {},
                             text: 'Adicionar',
                             backgroundColor: Colors.blue,
                             foregroundColor: Colors.white,
-                          ),
                         ),
                       ],
                     ),
