@@ -20,6 +20,8 @@ class CustomTextfield extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.readOnly = false,
     this.onTap,
+    this.onChanged,
+    this.errorText,
   });
 
   final TextEditingController controller;
@@ -30,6 +32,8 @@ class CustomTextfield extends StatelessWidget {
   final TextInputType keyboardType;
   final bool readOnly;
   final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +43,15 @@ class CustomTextfield extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       onTap: onTap,
-      style: TextStyle(color: Colors.white),
+      onChanged: onChanged,
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(color: Colors.blueGrey[400]),
         prefixIcon: Icon(prefixIcon, color: Colors.white),
         suffixIcon: sufixIcon,
+        errorText: errorText,
+        errorStyle: const TextStyle(color: Color(0xFFFFB4B4), fontSize: 12),
         filled: true,
         fillColor: Colors.transparent,
         border: OutlineInputBorder(

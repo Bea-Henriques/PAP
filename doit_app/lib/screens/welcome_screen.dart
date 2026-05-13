@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,10 +17,7 @@ class WelcomePage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppConstants.brandPurple,
-              Colors.black,
-            ],
+            colors: [AppConstants.brandPurple, Colors.black],
           ),
         ),
         child: SafeArea(
@@ -32,7 +28,7 @@ class WelcomePage extends StatelessWidget {
               children: [
                 const Spacer(flex: 3),
 
-                // TODO: substituir pelo logo real da aplicação
+                // Hero logo
                 Container(
                   width: 90,
                   height: 90,
@@ -40,27 +36,23 @@ class WelcomePage extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: AppConstants.brandPurple,
                   ),
-                  child: const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 44,
-                  ),
+                  child: const Icon(Icons.check, color: Colors.white, size: 44),
                 ),
 
                 const SizedBox(height: 20),
 
-                // TODO: substituir pela fonte real da aplicação
+                // App name
                 const CustomText(
                   text: 'DoIt',
                   fontSize: 52,
-                  fontFamily: 'DancingScript', 
+                  fontFamily: 'DancingScript',
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                 ),
 
                 const Spacer(flex: 2),
 
-                // Texto descritivo
+                // Intro message
                 const CustomText(
                   text: 'Imagine if you did it...\nNow, make it real!',
                   fontSize: 16,
@@ -71,13 +63,12 @@ class WelcomePage extends StatelessWidget {
 
                 const Spacer(flex: 3),
 
-                // Botão "Get Started"
+                // Primary action button
                 CustomButton(
                   text: 'Get Started',
                   backgroundColor: AppConstants.brandPurple,
                   foregroundColor: Colors.white,
                   onPressed: () {
-                    // Navegar para a página de sign up
                     Navigator.push(
                       context,
                       MaterialPageRoute(

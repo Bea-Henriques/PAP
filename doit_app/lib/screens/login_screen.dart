@@ -1,5 +1,8 @@
 import 'package:doit_app/app_constants.dart';
+import 'package:doit_app/screens/home_screen.dart';
+import 'package:doit_app/screens/forgot_password_screen.dart';
 import 'package:doit_app/screens/signup_screen.dart';
+import 'package:doit_app/services/auth_services.dart';
 import 'package:doit_app/widgets/custom_button.dart';
 import 'package:doit_app/widgets/custom_label.dart';
 import 'package:doit_app/widgets/custom_text.dart';
@@ -14,10 +17,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // Form controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Local UI state
   bool _obscurePassword = true;
+  bool _isLoading = false;
+
+  final AuthService _authService = AuthService();
 
   @override
   void dispose() {
@@ -26,8 +34,10 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
-    if (_emailController.text.trim().isEmpty || _passwordController.text.isEmpty) {
+  // Login action (local validation + feedback)
+  Future<void> _handleLogin() async {
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -37,12 +47,48 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Login validado localmente. Falta ligar backend.'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final result = await _authService.signIn(_emailController.text.trim(), _passwordController.text);
+
+      if (!mounted) {
+        return;
+      }
+
+      if (result.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.errorMessage!),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro inesperado. Tente novamente.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -55,10 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppConstants.brandPurple,
-              Colors.black,
-            ],
+            colors: [AppConstants.brandPurple, Colors.black],
           ),
         ),
         child: SafeArea(
@@ -67,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Header icon
                 const SizedBox(height: 32),
                 Center(
                   child: Container(
@@ -77,12 +121,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: AppConstants.brandPurple,
                     ),
                     child: const Icon(
-                      Icons.check,
+                      Icons.check_rounded,
                       color: Colors.white,
                       size: 34,
                     ),
                   ),
                 ),
+
+                // Title
                 const SizedBox(height: 32),
                 const CustomText(
                   text: 'Welcome Back',
@@ -91,6 +137,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   textAlign: TextAlign.left,
                   color: Colors.white,
                 ),
+
+                // Credentials form
                 const SizedBox(height: 28),
                 const CustomLabel(text: 'Email'),
                 const SizedBox(height: 8),
@@ -115,11 +163,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                     },
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                       color: Colors.white,
                     ),
                   ),
                 ),
+
+                // Forgot password link
                 const SizedBox(height: 4),
                 Align(
                   alignment: Alignment.centerRight,
@@ -131,10 +183,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Recuperação de password em breve.'),
-                          backgroundColor: Colors.white24,
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordScreen(),
                         ),
                       );
                     },
@@ -145,13 +196,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
+
+                // Primary action button
                 const SizedBox(height: 24),
                 CustomButton(
-                  text: 'Login',
-                  onPressed: _handleLogin,
+                  text: _isLoading ? 'A entrar...' : 'Login',
+                  onPressed: _isLoading ? null : _handleLogin,
                   backgroundColor: AppConstants.brandPurple,
                   foregroundColor: Colors.white,
                 ),
+
+                // Secondary navigation link
                 const SizedBox(height: 20),
                 Center(
                   child: Wrap(
@@ -187,6 +242,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
+
+                // Social section
                 const SizedBox(height: 24),
                 const Center(
                   child: CustomText(
@@ -231,6 +288,7 @@ class _SocialNetworkLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Reusable social logo renderer.
     return SizedBox(
       width: size,
       height: size,

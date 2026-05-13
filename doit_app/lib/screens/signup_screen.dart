@@ -1,5 +1,8 @@
 import 'package:doit_app/app_constants.dart';
+import 'package:doit_app/screens/home_screen.dart';
 import 'package:doit_app/screens/login_screen.dart';
+import 'package:doit_app/services/auth_services.dart';
+import 'package:doit_app/services/users_services.dart';
 import 'package:doit_app/widgets/custom_button.dart';
 import 'package:doit_app/widgets/custom_label.dart';
 import 'package:doit_app/widgets/custom_text.dart';
@@ -14,24 +17,35 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  // Form controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController = TextEditingController();
 
+  // Local UI state
   bool _obscurePassword = true;
+  bool _isLoading = false;
+
+  final AuthService _authService = AuthService();
+  final UsersService _usersService = UsersService();
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _passwordConfirmController.dispose();
     super.dispose();
   }
 
-  void _handleSignUp() {
-    if (_nameController.text.trim().isEmpty ||
-        _emailController.text.trim().isEmpty ||
-        _passwordController.text.isEmpty) {
+  // Handles sign up button press
+  Future<void> _handleSignUp() async {
+    // Validate that all fields are filled
+    if (_nameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _passwordConfirmController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -39,6 +53,83 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       );
       return;
+    }
+
+    // Validate that password and confirmation match
+    if (_passwordController.text != _passwordConfirmController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('As senhas não coincidem.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final result = await _authService.register(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      if (result.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.errorMessage!),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (result.user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Nao foi possivel criar a conta.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      await _usersService.createUser(
+        result.user!.uid,
+        _nameController.text,
+        _emailController.text,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro inesperado. Tente novamente.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -52,10 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppConstants.brandPurple,
-              Colors.black,
-            ],
+            colors: [AppConstants.brandPurple, Colors.black],
           ),
         ),
         child: SafeArea(
@@ -64,7 +152,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 32),
+                // Header icon
+                const SizedBox(height: 20),
                 Center(
                   child: Container(
                     width: 70,
@@ -74,12 +163,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: AppConstants.brandPurple,
                     ),
                     child: const Icon(
-                      Icons.check,
+                      Icons.person_add_alt_1_rounded,
                       color: Colors.white,
                       size: 34,
                     ),
                   ),
                 ),
+
+                // Title
                 const SizedBox(height: 32),
                 const CustomText(
                   text: 'Create Account',
@@ -88,6 +179,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   textAlign: TextAlign.left,
                   color: Colors.white,
                 ),
+
+                // Account form
                 const SizedBox(height: 28),
                 const CustomLabel(text: 'Name'),
                 const SizedBox(height: 8),
@@ -120,18 +213,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       });
                     },
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                       color: Colors.white,
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+                const CustomLabel(text: 'Confirm Password'),
+                const SizedBox(height: 8),
+                CustomTextfield(
+                  controller: _passwordConfirmController,
+                  hintText: 'Confirm your password',
+                  prefixIcon: Icons.lock,
+                  obscureText: _obscurePassword,
+                  sufixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+
+                // Primary action button
                 const SizedBox(height: 32),
                 CustomButton(
-                  text: 'Sign Up',
-                  onPressed: _handleSignUp,
+                  text: _isLoading ? 'A criar conta...' : 'Sign Up',
+                  onPressed: _isLoading ? null : _handleSignUp,
                   backgroundColor: AppConstants.brandPurple,
                   foregroundColor: Colors.white,
                 ),
+
+                // Secondary navigation link
                 const SizedBox(height: 20),
                 Center(
                   child: Wrap(
@@ -167,6 +288,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ),
                 ),
+
+                // Social section
                 const SizedBox(height: 24),
                 const Center(
                   child: CustomText(
@@ -211,6 +334,7 @@ class _SocialNetworkLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Reusable social logo renderer.
     return SizedBox(
       width: size,
       height: size,

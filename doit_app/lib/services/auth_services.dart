@@ -56,7 +56,7 @@ class AuthService {
     try {
       await _auth.signOut();
     } catch (e) {
-      print(e.toString());
+      // Error during sign out
     }
   }
 
