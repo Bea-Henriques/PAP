@@ -1,5 +1,6 @@
 import 'package:doit_app/app_constants.dart';
-import 'package:doit_app/screens/home_screen.dart';
+import 'package:doit_app/models/user_model.dart';
+import 'package:doit_app/screens/dashboard_screen.dart';
 import 'package:doit_app/screens/login_screen.dart';
 import 'package:doit_app/services/auth_services.dart';
 import 'package:doit_app/services/users_services.dart';
@@ -21,7 +22,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _passwordConfirmController = TextEditingController();
+  final TextEditingController _passwordConfirmController =
+      TextEditingController();
 
   // Local UI state
   bool _obscurePassword = true;
@@ -100,11 +102,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return;
       }
 
-      await _usersService.createUser(
-        result.user!.uid,
-        _nameController.text,
-        _emailController.text,
+      User newUser = User(
+        uid: result.user!.uid,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
       );
+
+      await _usersService.createUser(newUser);
 
       if (!mounted) {
         return;
@@ -112,7 +116,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const DashboardScreen()),
       );
     } catch (_) {
       if (!mounted) {

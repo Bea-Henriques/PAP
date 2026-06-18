@@ -1,5 +1,5 @@
 import 'package:doit_app/app_constants.dart';
-import 'package:doit_app/screens/home_screen.dart';
+import 'package:doit_app/screens/dashboard_screen.dart';
 import 'package:doit_app/screens/forgot_password_screen.dart';
 import 'package:doit_app/screens/signup_screen.dart';
 import 'package:doit_app/services/auth_services.dart';
@@ -52,7 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final result = await _authService.signIn(_emailController.text.trim(), _passwordController.text);
+      final result = await _authService.signIn(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
 
       if (!mounted) {
         return;
@@ -70,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const DashboardScreen()),
       );
     } catch (_) {
       if (!mounted) {
